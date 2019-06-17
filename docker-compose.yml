@@ -1,0 +1,37 @@
+version: '3'
+services:
+
+  app:
+    image: me/api:latest
+    ports:
+      - 5000:5000
+
+  worker:
+    image: me/worker:latest
+    environment:
+      - DB_NAME=test_db
+    depends_on:
+      - mongo
+      - redis
+
+  mongo:
+    image: mongo:latest
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 1234
+
+  mongo-express:
+    image: mongo-express:latest
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: 1234
+
+  redis:
+      image: "redis:alpine"
+
+volumes:
+  mongo_data:
